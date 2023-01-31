@@ -91,8 +91,6 @@ void help()
       "\n>exit"
       "\n>pipe"
       "\n>comandos gerais da Shell UNIX"
-      "\n>improper space handling");
-
   return;
 }
 
