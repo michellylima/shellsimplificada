@@ -56,29 +56,29 @@ int entrada(char *str)
   }
 }
 
-int processString(char *str, char **parsed, char **parsedpipe)
+int processaEntrada(char *str, char **parsed, char **parsedpipe)
 {
 
-  char *strpiped[2];
-  int piped = 0;
+  char *strpipe[2]; // ponteiro pro array do pipe. Posição 0 é leitura e 1 é escrita
+  int ehPipe = 0;
 
-  piped = parsePipe(str, strpiped);
+  ehPipe = parsePipe(str, strpipe);
 
-  if (piped)
+  if (ehPipe)
   {
-    parseSpace(strpiped[0], parsed);
-    parseSpace(strpiped[1], parsedpipe);
+    parseSpace(strpipe[0], parsed);
+    parseSpace(strpipe[1], parsedpipe);
   }
+
   else
   {
-
     parseSpace(str, parsed);
   }
 
-  if (comandosBuiltin(parsed))
+  if (comandosBuiltin(parsed)) // verifica se o comando dado é builtin
     return 0;
   else
-    return 1 + piped;
+    return 1 + ehPipe; // retorna o comando simples ou piped
 }
 
 void help()
@@ -175,8 +175,8 @@ void execArgs(char **parsed)
 void execArgsPiped(char **parsed, char **parsedpipe)
 {
   int pipefd[2];
-  // 0 = leitura do final do pipe
-  // 1 = escrita do final do pipe
+  // 0 = leitura
+  // 1 = escrita
 
   pid_t p1, p2;
 
@@ -240,21 +240,21 @@ void execArgsPiped(char **parsed, char **parsedpipe)
   }
 }
 
-// function for finding pipe
-int parsePipe(char *str, char **strpiped)
+// verifica se é um processo com pipe
+int parsePipe(char *str, char **strpipe)
 {
   int i;
 
   for (i = 0; i < 2; i++)
   {
-    strpiped[i] = strsep(&str, "|");
-    if (strpiped[i] == NULL)
+    strpipe[i] = strsep(&str, "|"); // obtem o elemento logo ao lado do caractere "|"
+    if (strpipe[i] == NULL)
     {
       break;
     }
   }
 
-  if (strpiped[1] == NULL)
+  if (strpipe[1] == NULL)
   {
     // nenhum pipe foi encontrado
     return 0;
@@ -266,7 +266,7 @@ int parsePipe(char *str, char **strpiped)
   }
 }
 
-// function for parsing command words
+// função para tratar os comandos separados
 void parseSpace(char *str, char **parsed)
 {
   int i;
@@ -309,7 +309,7 @@ int main()
       continue;
     }
 
-    retorno = processString(comando, parsedArgs, parsedArgsPiped);
+    retorno = processaEntrada(comando, parsedArgs, parsedArgsPiped);
 
     if (retorno == 1) // comando simples
     {
