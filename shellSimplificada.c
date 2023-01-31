@@ -29,7 +29,6 @@ void start()
   clear();
 }
 
-// Function to print Current Directory.
 void diretorioAtual()
 {
   char diretorio[1024];
@@ -234,7 +233,6 @@ void execArgsPiped(char **parsed, char **parsedpipe)
 
     else
     {
-      wait(NULL);
       wait(NULL);
     }
   }
